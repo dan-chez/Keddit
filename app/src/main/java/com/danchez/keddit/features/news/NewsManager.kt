@@ -1,17 +1,19 @@
 package com.danchez.keddit.features.news
 
 import com.danchez.keddit.api.NewsAPI
-import com.danchez.keddit.api.NewsRestAPI
 import com.danchez.keddit.commons.RedditNews
 import com.danchez.keddit.commons.RedditNewsItem
 import rx.Observable
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class NewsManager(private val api: NewsAPI = NewsRestAPI()) {
+@Singleton
+class NewsManager @Inject constructor(private val api: NewsAPI) {
 
     fun getNews(after: String, limit: String = "10"): Observable<RedditNews> {
         return Observable.create { subscriber ->
 
-            val callResponse  = api.getNews(after, limit)
+            val callResponse = api.getNews(after, limit)
 
             val response = callResponse.execute()
 

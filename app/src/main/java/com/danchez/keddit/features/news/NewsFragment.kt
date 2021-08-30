@@ -16,11 +16,14 @@ import com.danchez.keddit.commons.extensions.inflate
 import com.danchez.keddit.features.news.adapter.NewsAdapter
 import com.danchez.keddit.features.news.adapter.NewsDelegateAdapter
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_news.*
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class NewsFragment : RxBaseFragment(), NewsDelegateAdapter.OnViewSelectedListener {
 
     companion object {
@@ -31,7 +34,7 @@ class NewsFragment : RxBaseFragment(), NewsDelegateAdapter.OnViewSelectedListene
 
     private val newsAdapter by lazy { NewsAdapter(this) }
 
-    private val newsManager by lazy { NewsManager() }
+    @Inject lateinit var newsManager: NewsManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return container?.inflate(R.layout.fragment_news)
