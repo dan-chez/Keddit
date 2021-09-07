@@ -28,9 +28,20 @@ class NewsFragment : RxBaseFragment(), NewsDelegateAdapter.OnViewSelectedListene
 
     companion object {
         private const val KEY_REDDIT_NEWS = "redditNews"
+        private const val KEY_LIMIT = "newsLimit"
+
+        fun newInstance(limit: String): NewsFragment {
+            val args = Bundle()
+            args.putString(KEY_LIMIT, limit)
+            val fragment = NewsFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 
     private var redditNews: RedditNews? = null
+
+    private lateinit var newsLimit: String
 
     private val newsAdapter by lazy { NewsAdapter(this) }
 
@@ -49,6 +60,9 @@ class NewsFragment : RxBaseFragment(), NewsDelegateAdapter.OnViewSelectedListene
             clearOnScrollListeners()
             addOnScrollListener(InfiniteScrollListener({ requestNews() }, linearLayoutManager))
         }
+
+        newsLimit = arguments?.getString(KEY_LIMIT).toString()
+
         news_list.adapter = newsAdapter
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_REDDIT_NEWS)) {
@@ -69,7 +83,7 @@ class NewsFragment : RxBaseFragment(), NewsDelegateAdapter.OnViewSelectedListene
     }
 
     private fun requestNews() {
-        val subscription = newsManager.getNews(redditNews?.after ?: "")
+        val subscription = newsManager.getNews(redditNews?.after ?: "", newsLimit)
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { retrievedNews ->
